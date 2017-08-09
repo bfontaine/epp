@@ -20,6 +20,9 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// This takes ~9s on my 55M benchmark file; we might be able to speed up
+	// things by concurrently reading on stdin and writing on stdout instead of
+	// these read+pprint+write steps.
 	err = edn.PPrint(&dst, src, &edn.PPrintOpts{})
 
 	if err != nil {
