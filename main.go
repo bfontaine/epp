@@ -16,7 +16,7 @@ func main() {
 	input := bufio.NewReader(os.Stdin)
 	output := bufio.NewWriter(os.Stdout)
 
-	// This takes ~6s on my 55M benchmark file
+	// This takes ~5.8s on my 55M benchmark file
 	err := edn.PPrintStream(output, input, &edn.PPrintOpts{})
 
 	if err != nil {
