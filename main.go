@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/bfontaine/edn"
+	"gopkg.in/bfontaine/edn.v1"
 )
 
 func main() {
