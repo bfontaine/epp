@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"gopkg.in/bfontaine/edn.v1"
+	"gopkg.in/edn.v1"
 )
 
 func main() {
