@@ -1,5 +1,9 @@
 # Epp Changelog
 
+## 0.1.2 (2017/08/18)
+
+* Use the upstream `edn` package again instead of my own fork
+
 ## 0.1.1 (2017/08/17)
 
 * Flush the output buffer. Without this, `epp` doesn’t print anything when
