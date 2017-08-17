@@ -19,4 +19,5 @@ func main() {
 	if err := edn.PPrintStream(output, input, opts); err != nil {
 		log.Fatal(err)
 	}
+	output.Flush()
 }
