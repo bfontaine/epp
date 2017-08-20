@@ -1,9 +1,7 @@
 package epp
 
 import (
-	"bytes"
 	"io"
-	"io/ioutil"
 
 	edn "gopkg.in/edn.v1"
 )
@@ -23,27 +21,14 @@ func (p *PartialEdn) MarshalEDN() ([]byte, error) {
 
 func Parse(r io.Reader) (*PartialEdn, error) {
 	var p PartialEdn
-
-	// unfortunately Unmarshal takes a bytes array instead of a reader
-	content, err := ioutil.ReadAll(r)
-	if err != nil {
-		return nil, err
-	}
-
-	err = edn.Unmarshal(content, &p)
+	err := edn.NewDecoder(r).Decode(&p)
 	return &p, err
 }
 
 func (p *PartialEdn) PPrint(w io.Writer) error {
-	content, err := edn.Marshal(p)
-	if err != nil {
-		return err
+	content, err := edn.MarshalPPrint(p, &edn.PPrintOpts{})
+	if err == nil {
+		_, err = w.Write(content)
 	}
-
-	err = edn.PPrintStream(w, bytes.NewBuffer(p.content), &edn.PPrintOpts{})
-	if err != nil {
-		return err
-	}
-	_, err = w.Write(content)
 	return err
 }
