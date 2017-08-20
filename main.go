@@ -18,10 +18,10 @@ const (
 func printUsage() {
 	fmt.Fprintf(os.Stderr,
 		`Epp usage:
-%s [options] [<expression> [<input>]]
+%s [options] [<filter> [<input>]]
 
-The default expression is "." and the default input is stdin.
-No expression other than the default one is supported for now.
+The default filter is "." and the default input is stdin.
+No filter other than the default one is supported for now.
 
 Valid options:
 `, os.Args[0])
@@ -49,16 +49,16 @@ func main() {
 	var input *bufio.Reader
 	var output *bufio.Writer
 
-	expression := "."
+	filterText := "."
 	inputFilename := "-"
 
 	narg := flag.NArg()
 	// $ epp [options]
 	if narg > 0 {
-		expression = flag.Arg(0)
-		// $ epp [options] <expression>
+		filterText = flag.Arg(0)
+		// $ epp [options] <filter>
 		if narg > 1 {
-			// $ epp [options] <expression> <filename>
+			// $ epp [options] <filter> <filename>
 			inputFilename = flag.Arg(1)
 			if narg > 2 {
 				flag.Usage()
@@ -98,14 +98,18 @@ func main() {
 		output = bufio.NewWriter(f)
 	}
 
-	expr := epp.ParseExpression(expression)
+	filter, err := epp.ParseFilter(filterText)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error parsing filter '%s': %v", filterText, err)
+		os.Exit(2)
+	}
 
 	// shortcut
-	if expr.Identity() {
+	if filter.Identity() {
 		err := edn.PPrintStream(output, input, &edn.PPrintOpts{})
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error pretty-printing EDN: %v", err)
-			os.Exit(4)
+			os.Exit(3)
 		}
 		return
 	}
@@ -113,13 +117,13 @@ func main() {
 	p, err := epp.Parse(input)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error parsing EDN: %v", err)
-		os.Exit(2)
+		os.Exit(4)
 	}
 
 	err = p.PPrint(output)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error pretty-printing EDN: %v", err)
-		os.Exit(3)
+		os.Exit(5)
 	}
 
 	output.Flush()
