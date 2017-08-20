@@ -12,4 +12,23 @@
 
 ## Usage
 
-    cat yourfile.edn | epp
+    epp [options] [<filter> [<input-file>]]
+
+Where valid options include:
+
+* `-output <output-file>`: Write in a file instead of `stdout`.
+* `-append`: When writing in a file, do it in append mode.
+
+`<filter>` should be a valid filter according to the grammar below. If
+`<input-file>` is given, the EDN is read from it instead of `stdin`.
+
+Options and arguments expecting a filename accept `-` as an alias for `stdin`
+for reading or `stdout` for writing.
+
+### Filters
+
+Filters follow subset of [jq](https://stedolan.github.io/jq/)’s grammar.
+
+* `.`: Identity.
+
+Only the identity filter is implemented for now.
