@@ -71,7 +71,7 @@ func (f chainFilter) Apply(p *PartialEdn) (*PartialEdn, error) {
 // end Filters definitions
 
 func IsIdentityFilter(f Filter) bool {
-	_, ok := f.(*identityFilter)
+	_, ok := f.(identityFilter)
 	return ok
 }
 
