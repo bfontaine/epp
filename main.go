@@ -91,7 +91,7 @@ func main() {
 
 		f, err := os.OpenFile(outputFilename, mode, 0666)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error opening '%s': %v", outputFilename, err)
+			fmt.Fprintf(os.Stderr, "Error opening '%s': %v\n", outputFilename, err)
 			os.Exit(1)
 		}
 		defer f.Close()
@@ -100,29 +100,35 @@ func main() {
 
 	filter, err := epp.ParseFilter(filterText)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error parsing filter '%s': %v", filterText, err)
+		fmt.Fprintf(os.Stderr, "Error parsing filter '%s': %v\n", filterText, err)
 		os.Exit(2)
 	}
 
 	// shortcut
-	if filter.Identity() {
+	if epp.IsIdentityFilter(filter) {
 		err := edn.PPrintStream(output, input, &edn.PPrintOpts{})
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error pretty-printing EDN: %v", err)
-			os.Exit(3)
+			fmt.Fprintf(os.Stderr, "Error pretty-printing EDN: %v\n", err)
+			os.Exit(5)
 		}
 		return
 	}
 
 	p, err := epp.Parse(input)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error parsing EDN: %v", err)
+		fmt.Fprintf(os.Stderr, "Error parsing EDN: %v\n", err)
+		os.Exit(3)
+	}
+
+	p, err = filter.Apply(p)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error filtering EDN: %v\n", err)
 		os.Exit(4)
 	}
 
 	err = p.PPrint(output)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error pretty-printing EDN: %v", err)
+		fmt.Fprintf(os.Stderr, "Error pretty-printing EDN: %v\n", err)
 		os.Exit(5)
 	}
 

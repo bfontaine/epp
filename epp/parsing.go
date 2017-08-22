@@ -10,6 +10,8 @@ type PartialEdn struct {
 	content []byte
 }
 
+var Nil *PartialEdn = &PartialEdn{content: []byte("nil")}
+
 func (p *PartialEdn) UnmarshalEDN(b []byte) error {
 	p.content = b
 	return nil
@@ -27,8 +29,14 @@ func Parse(r io.Reader) (*PartialEdn, error) {
 
 func (p *PartialEdn) PPrint(w io.Writer) error {
 	content, err := edn.MarshalPPrint(p, &edn.PPrintOpts{})
-	if err == nil {
-		_, err = w.Write(content)
+	if err != nil {
+		return err
 	}
+
+	if len(content) > 0 && content[len(content)-1] != '\n' {
+		content = append(content, '\n')
+	}
+
+	_, err = w.Write(content)
 	return err
 }
