@@ -27,8 +27,11 @@ for reading or `stdout` for writing.
 
 ### Filters
 
-Filters follow subset of [jq](https://stedolan.github.io/jq/)’s grammar.
+Filters follow a grammar similar to [jq](https://stedolan.github.io/jq/)’s.
 
 * `.`: Identity.
+* `.field`
+* `.0`, `.1`, `.42`
+* `keys`: Available keys in a map, in unspecified order.
 
-Only the identity filter is implemented for now.
+Filters are separated by spaces.
