@@ -75,22 +75,24 @@ func IsIdentityFilter(f Filter) bool {
 	return ok
 }
 
-var filtersSepRe = regexp.MustCompile(`\s*\.`)
+var filtersSepRe = regexp.MustCompile(`\s+`)
 
+// TODO test me
 func ParseFilter(text string) (Filter, error) {
+	var startsWithDot bool
+
 	text = strings.TrimSpace(text)
-
-	startsWithDot := strings.HasPrefix(text, ".")
-
-	if startsWithDot {
-		text = text[1:]
-	}
 
 	parts := filtersSepRe.Split(text, -1)
 
 	chain := make([]Filter, 0, len(parts))
 
 	for _, part := range parts {
+		startsWithDot = strings.HasPrefix(text, ".")
+		if startsWithDot {
+			part = part[1:]
+		}
+
 		// identity
 		if part == "" {
 			continue
