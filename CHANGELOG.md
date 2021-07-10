@@ -1,5 +1,9 @@
 # Epp Changelog
 
+## 0.1.3 (2021/07/10)
+
+* Use the latest `go-edn`
+
 ## 0.1.2 (2017/08/18)
 
 * Use the upstream `edn` package again instead of my own fork
